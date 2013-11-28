@@ -6,6 +6,16 @@
 #include <iomanip>
 #include <fstream>
 #include <cstdio>
+//get time and date for getbin file name
+const std::string currentDateTime() {
+    time_t     now = time(0);
+    struct tm  tstruct;
+    char       buf[80];
+    tstruct = *localtime(&now);
+    strftime(buf, sizeof(buf), "%m-%d-%y", &tstruct);
+
+    return buf;
+}
 		//NORMALIZE//
 //Normalize to normalize a histogram
 template <class T>
@@ -64,7 +74,7 @@ T Normalize6 (T a) {
 	get getbin (get a, const string b) {
 	get result;
 
-	const string c = "/home/users/sanil/MT2/bincontent/" + b + ".txt";
+	const string c = "/home/users/sanil/MT2/bincontent/" + currentDateTime() + b + ".txt";
 	const char* d = c.c_str();
 
 	ofstream file(d);
