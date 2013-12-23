@@ -6,16 +6,18 @@
 #include <iomanip>
 #include <fstream>
 #include <cstdio>
+
 //get time and date for getbin file name
+/*
 const std::string currentDateTime() {
     time_t     now = time(0);
     struct tm  tstruct;
     char       buf[80];
     tstruct = *localtime(&now);
     strftime(buf, sizeof(buf), "%m-%d-%y", &tstruct);
-
     return buf;
 }
+*/
 		//NORMALIZE//
 //Normalize to normalize a histogram
 template <class T>
@@ -68,13 +70,14 @@ T Normalize6 (T a) {
   return (result);
 }
 
-	//GET BIN CONTENT//
-
-	template <class get>
+	//GET BIN CONTENT//	
+template <class get>
 	get getbin (get a, const string b) {
 	get result;
-
-	const string c = "/home/users/sanil/MT2/bincontent/" + currentDateTime() + b + ".txt";
+	//delete getbincontent, then make new directory//
+	//system("exec rm -r /home/users/sanil/MT2/getbincontent");
+	//system("exec mkdir /home/users/sanil/MT2/getbincontent");
+	const string c =  "/home/users/sanil/MT2/getbincontent/" + b + ".txt";
 	const char* d = c.c_str();
 
 	ofstream file(d);
@@ -82,10 +85,25 @@ T Normalize6 (T a) {
 	if(file.is_open()){
 	int max = a->FindLastBinAbove(0,1);
 		for (unsigned int i=1; (i <= max); i++ ){
-	//cout <<"Bin # "<< i << endl; 
 	file << a->GetBinContent(i) << endl;
-							}
+				}
 			  }
   return (result);
-}
+		}
 
+	template <class histo>
+	histo color_histo (histo a, const char b) {
+	histo result;
+
+	a->SetFillColor(b);
+	a->SetLineColor(b);
+
+  return (result);
+		}
+	template<class leg>
+	leg leg_Draw (leg a){
+	leg result;
+	
+	
+  return (result);
+}
