@@ -5,19 +5,62 @@
 #include <vector>
 #include <iomanip>
 #include <fstream>
+#include <string>
 #include <cstdio>
+#include <set>
+//ROOT
+#include "TROOT.h"
+#include "TFile.h"
+#include "TChain.h"
+#include "TTree.h"
+#include "THStack.h"
+#include "TLegend.h"
+#include "TStyle.h"
+#include "TCanvas.h"
+#include "TLatex.h"
+#include "TH1F.h"
+#include "TH2F.h"
+#include "TLine.h"
+#include "Math/LorentzVector.h"
+#include "Math/VectorUtil.h"
 
-//get time and date for getbin file name
-/*
-const std::string currentDateTime() {
-    time_t     now = time(0);
-    struct tm  tstruct;
-    char       buf[80];
-    tstruct = *localtime(&now);
-    strftime(buf, sizeof(buf), "%m-%d-%y", &tstruct);
-    return buf;
+struct DorkyEventIdentifier {
+  // this is a workaround for not having unique event id's in MC
+  unsigned long int evt_run, evt_event, evt_lumi;
+  bool operator < (const DorkyEventIdentifier &) const;
+  bool operator == (const DorkyEventIdentifier &) const;
+};
+
+bool DorkyEventIdentifier::operator < (const DorkyEventIdentifier &other) const
+{
+  if (evt_run != other.evt_run)
+    return evt_run < other.evt_run;
+  if (evt_event != other.evt_event)
+    return evt_event < other.evt_event;
+  if(evt_lumi != other.evt_lumi)
+    return evt_lumi < other.evt_lumi;
+  return false;
 }
-*/
+
+bool DorkyEventIdentifier::operator == (const DorkyEventIdentifier &other) const
+{
+  if (evt_run != other.evt_run)
+    return false;
+  if (evt_event != other.evt_event)
+    return false;
+  return true;
+}
+
+std::set<DorkyEventIdentifier> already_seen;
+bool is_duplicate (const DorkyEventIdentifier &id) {
+  std::pair<std::set<DorkyEventIdentifier>::const_iterator, bool> ret =
+    already_seen.insert(id);
+  return !ret.second;
+}
+
+
+
+
 		//NORMALIZE//
 //Normalize to normalize a histogram
 template <class T>
@@ -84,13 +127,13 @@ template <class get>
 	if(! file.is_open()){return 0;}
 	if(file.is_open()){
 	int max = a->FindLastBinAbove(0,1);
-		for (unsigned int i=1; (i <= max); i++ ){
+		for (int i=1; (i <= max); i++ ){
 	file << a->GetBinContent(i) << endl;
 				}
 			  }
   return (result);
 		}
-
+/*
 	template <class histo>
 	histo color_histo (histo a, const char b) {
 	histo result;
@@ -107,3 +150,4 @@ template <class get>
 	
   return (result);
 }
+*/
